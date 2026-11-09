@@ -1,5 +1,6 @@
 ## 1.4.2-wip
 
+* Skip Unicode table lookups for consecutive printable ASCII and Hebrew letters.
 * Avoid unnecessary grapheme scans for zero or oversized range selections.
 * Throw `RangeError` for invalid `characterAt` positions, consistently with
   `elementAt`.
