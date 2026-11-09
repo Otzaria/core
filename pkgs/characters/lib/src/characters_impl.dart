@@ -226,6 +226,9 @@ final class StringCharacters extends Iterable<String> implements Characters {
   }
 
   Characters _skip(int count) {
+    if (count == 0) return this;
+    // A grapheme cluster must contain at least one UTF-16 code unit.
+    if (count >= string.length) return Characters.empty;
     var start = _skipIndices(count, 0, null);
     if (start == string.length) return Characters.empty;
     return StringCharacters(string.substring(start));
@@ -238,6 +241,8 @@ final class StringCharacters extends Iterable<String> implements Characters {
   }
 
   Characters _take(int count) {
+    if (count == 0) return Characters.empty;
+    if (count >= string.length) return this;
     var end = _skipIndices(count, 0, null);
     if (end == string.length) return this;
     return StringCharacters(string.substring(0, end));
@@ -250,7 +255,9 @@ final class StringCharacters extends Iterable<String> implements Characters {
     if (end < start) throw RangeError.range(end, start, null, 'end');
     if (end == start) return Characters.empty;
     if (start == 0) return _take(end);
-    if (string.isEmpty) return this;
+    if (start >= string.length) return Characters.empty;
+    // An end position beyond the UTF-16 length cannot cut off a grapheme.
+    if (end >= string.length) return _skip(start);
     var breaks = Breaks(string, 0, string.length, stateSoTNoBreak);
     var startIndex = _skipIndices(start, 0, breaks);
     if (startIndex == string.length) return Characters.empty;
@@ -260,16 +267,22 @@ final class StringCharacters extends Iterable<String> implements Characters {
 
   @override
   Characters characterAt(int position) {
+    RangeError.checkNotNegative(position, 'position');
+    final requestedPosition = position;
     var breaks = Breaks(string, 0, string.length, stateSoTNoBreak);
     var start = 0;
 
     while (position > 0) {
       position--;
       start = breaks.nextBreak();
-      if (start < 0) throw StateError('No element');
+      if (start < 0) {
+        throw RangeError.index(requestedPosition, this, 'position');
+      }
     }
     var end = breaks.nextBreak();
-    if (end < 0) throw StateError('No element');
+    if (end < 0) {
+      throw RangeError.index(requestedPosition, this, 'position');
+    }
     if (start == 0 && end == string.length) return this;
     return StringCharacters(string.substring(start, end));
   }
@@ -325,6 +338,7 @@ final class StringCharacters extends Iterable<String> implements Characters {
   Characters skipLast(int count) {
     RangeError.checkNotNegative(count, 'count');
     if (count == 0) return this;
+    if (count >= string.length) return Characters.empty;
     if (string.isNotEmpty) {
       var breaks = BackBreaks(string, string.length, 0, stateEoTNoBreak);
       var endIndex = string.length;
@@ -365,6 +379,7 @@ final class StringCharacters extends Iterable<String> implements Characters {
   Characters takeLast(int count) {
     RangeError.checkNotNegative(count, 'count');
     if (count == 0) return Characters.empty;
+    if (count >= string.length) return this;
     if (string.isNotEmpty) {
       var breaks = BackBreaks(string, string.length, 0, stateEoTNoBreak);
       var startIndex = string.length;
@@ -588,7 +603,17 @@ class StringCharacterRange implements CharacterRange {
   }
 
   @override
-  Iterable<int> get utf16CodeUnits => _string.codeUnits.getRange(_start, _end);
+  Iterable<int> get utf16CodeUnits {
+    // Capture the bounds so that subsequent range moves do not affect the
+    // returned lazy iterable.
+    final source = _string;
+    final start = _start;
+    final length = _end - start;
+    return Iterable<int>.generate(
+      length,
+      (index) => source.codeUnitAt(start + index),
+    );
+  }
 
   @override
   Runes get runes => Runes(current);
