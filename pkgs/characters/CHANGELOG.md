@@ -1,5 +1,6 @@
 ## 1.4.2-wip
 
+* Avoid unnecessary grapheme scans for zero or oversized range selections.
 * Throw `RangeError` for invalid `characterAt` positions, consistently with
   `elementAt`.
 * Reduce iteration overhead for `CharacterRange.utf16CodeUnits`.
