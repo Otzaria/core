@@ -52,4 +52,28 @@ void main() {
     expect(original, cast);
     expect(cast.last, 38);
   });
+
+  test('single-element growth does not cast existing elements', () {
+    final original = QueueList<num>()..addAll([1.5, 2, 3, 4, 5, 6, 7]);
+    final cast = original.cast<int>();
+
+    cast.addLast(8);
+
+    expect(original, [1.5, 2, 3, 4, 5, 6, 7, 8]);
+    expect(cast.last, 8);
+    expect(() => cast.first, throwsA(isA<TypeError>()));
+  });
+
+  test('bulk growth through chained casts keeps original element types', () {
+    final original = QueueList<Object>()..addAll([1.5, 'a']);
+    final cast = original.cast<num>().cast<int>();
+    final added = List<int>.generate(8, (i) => i);
+
+    cast.addAll(added);
+    original.add('b');
+
+    expect(original, [1.5, 'a', ...added, 'b']);
+    expect(cast[2], 0);
+    expect(() => cast[1], throwsA(isA<TypeError>()));
+  });
 }
