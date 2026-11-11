@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Speed up `CombinedListView` lookups and boundary access by visiting child lists directly instead of rescanning their lengths.
 - Detect resized backing lists in `ListSlice.reverseRange`, consistent with other slice mutations.
 - Return immediately from `Iterable.sample(0)` without traversing the input.
 - Avoid repeated list-length lookups in list equality and hashing.
