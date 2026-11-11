@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Avoid double-counting the reserved slot in `QueueList.from`, reducing power-of-two capacity over-allocation at boundary sizes.
 - Adds `separated` and `separatedList` extension methods to `Iterable`.
 - Adds `separate` extension method to `List`
 - Add `IterableMapEntryExtension` for working on `Map` as a list of pairs, using
