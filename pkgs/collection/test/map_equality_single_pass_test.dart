@@ -39,33 +39,33 @@ void main() {
 }
 
 class _CountingMap<K, V> extends MapBase<K, V> {
-  final Map<K, V> values;
+  final Map<K, V> _backing;
   int indexReads = 0;
   int forEachCalls = 0;
 
-  _CountingMap(this.values);
+  _CountingMap(this._backing);
 
   @override
   V? operator [](Object? key) {
     indexReads++;
-    return values[key];
+    return _backing[key];
   }
 
   @override
-  void operator []=(K key, V value) => values[key] = value;
+  void operator []=(K key, V value) => _backing[key] = value;
 
   @override
-  void clear() => values.clear();
+  void clear() => _backing.clear();
 
   @override
-  Iterable<K> get keys => values.keys;
+  Iterable<K> get keys => _backing.keys;
 
   @override
-  V? remove(Object? key) => values.remove(key);
+  V? remove(Object? key) => _backing.remove(key);
 
   @override
   void forEach(void Function(K, V) action) {
     forEachCalls++;
-    values.forEach(action);
+    _backing.forEach(action);
   }
 }
