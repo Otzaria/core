@@ -4,7 +4,6 @@
 
 import 'dart:math' show Random;
 
-import '../collection.dart' show DelegatingIterable;
 import 'algorithms.dart';
 import 'functions.dart' as functions;
 
@@ -30,6 +29,7 @@ extension IterableExtension<T> on Iterable<T> {
   /// The chosen elements are not in any specific order.
   List<T> sample(int count, [Random? random]) {
     RangeError.checkNotNegative(count, 'count');
+    if (count == 0) return <T>[];
     var iterator = this.iterator;
     var chosen = <T>[];
     random ??= Random();
@@ -1223,27 +1223,6 @@ class _SeparatedIterable<T> extends Iterable<T> {
     if (_flags & _afterFlag == 0) return _elements.last;
     if (_elements.isNotEmpty) return _separator;
     throw StateError('No element');
-  }
-
-  @override
-  Iterable<T> take(int count) {
-    if (count == 0) return Iterable<T>.empty();
-    var beforeCount = _flags >> 1;
-    if (count == 1) {
-      if (beforeCount == 0) {
-        return _elements.take(1);
-      }
-      // return Iterable<T>.value(_separator); // Why you no exist?!
-      return DelegatingIterable<T>([_separator]);
-    }
-    var countWithoutBefore = count - beforeCount;
-    var elementCount = (countWithoutBefore + 1) >> 1;
-    return _SeparatedIterable<T>(
-      _elements.take(elementCount),
-      _separator,
-      beforeCount != 0,
-      countWithoutBefore.isEven,
-    );
   }
 
   @override
