@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Apply key validation consistently in `CanonicalizedMap.addEntries`.
 - Fix `Iterable.separated().take()` to avoid yielding excess separators.
 - Keep `QueueList.cast` views consistent when the backing queue grows.
 - Optimize `BoolList` shrinking by clearing previously used words in bulk.
