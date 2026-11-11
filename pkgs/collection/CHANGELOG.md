@@ -4,7 +4,7 @@
 - Hash maps with a single `forEach` pass, avoiding redundant key lookups; shortcut empty map comparisons.
 - Keep zipped iterators terminal after the shortest input ends, avoiding accidental extra reads.
 - Validate shuffle and insertion-sort bounds before touching elements; skip RNG initialization for trivial shuffle ranges.
-- Speed up `CombinedListView` lookups and boundary access by visiting child lists directly instead of rescanning their lengths.
+- Search the child lists directly in `CombinedListView.indexOf`.
 - Detect resized backing lists in `ListSlice.reverseRange`, consistent with other slice mutations.
 - Return immediately from `Iterable.sample(0)` without traversing the input.
 - Avoid repeated list-length lookups in list equality and hashing.
