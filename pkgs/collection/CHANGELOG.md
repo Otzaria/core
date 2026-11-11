@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Hash maps with a single `forEach` pass, avoiding redundant key lookups; shortcut empty map comparisons.
 - Keep zipped iterators terminal after the shortest input ends, avoiding accidental extra reads.
 - Validate shuffle and insertion-sort bounds before touching elements; skip RNG initialization for trivial shuffle ranges.
 - Speed up `CombinedListView` lookups and boundary access by visiting child lists directly instead of rescanning their lengths.
