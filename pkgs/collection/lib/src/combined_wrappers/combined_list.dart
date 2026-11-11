@@ -71,49 +71,30 @@ class CombinedListView<T> extends ListBase<T>
 
   @override
   int lastIndexOf(Object? element, [int? start]) {
-    var offset = length;
+    var childIndex = _lists.length - 1;
+    var offset = 0;
+    if (start == null) {
+      offset = length;
+    } else {
+      if (start < 0) return -1;
+      for (var i = 0; i <= childIndex; i++) {
+        offset += _lists[i].length;
+        if (offset > start) {
+          childIndex = i;
+          break;
+        }
+      }
+    }
+    if (offset == 0) return -1;
     var limit = start ?? offset - 1;
-    if (limit < 0) return -1;
-    for (var i = _lists.length - 1; i >= 0; i--) {
-      var list = _lists[i];
+    for (; childIndex >= 0; childIndex--) {
+      var list = _lists[childIndex];
       var listLength = list.length;
       offset -= listLength;
       var localStart = limit - offset;
       if (localStart >= listLength) localStart = listLength - 1;
       for (var j = localStart; j >= 0; j--) {
         if (list[j] == element) return offset + j;
-      }
-    }
-    return -1;
-  }
-
-  @override
-  int indexWhere(bool Function(T) test, [int start = 0]) {
-    if (start < 0) start = 0;
-    var offset = 0;
-    for (var list in _lists) {
-      var listLength = list.length;
-      for (var i = start > offset ? start - offset : 0; i < listLength; i++) {
-        if (test(list[i])) return offset + i;
-      }
-      offset += listLength;
-    }
-    return -1;
-  }
-
-  @override
-  int lastIndexWhere(bool Function(T) test, [int? start]) {
-    var offset = length;
-    var limit = start ?? offset - 1;
-    if (limit < 0) return -1;
-    for (var i = _lists.length - 1; i >= 0; i--) {
-      var list = _lists[i];
-      var listLength = list.length;
-      offset -= listLength;
-      var localStart = limit - offset;
-      if (localStart >= listLength) localStart = listLength - 1;
-      for (var j = localStart; j >= 0; j--) {
-        if (test(list[j])) return offset + j;
       }
     }
     return -1;

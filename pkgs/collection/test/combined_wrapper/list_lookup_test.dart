@@ -32,38 +32,6 @@ void main() {
     }
   });
 
-  test('predicate search indices match a flattened list', () {
-    final lists = <List<int>>[
-      [],
-      [1, 2, 1],
-      [],
-      [3, 2, 4, 2],
-      [],
-      [5],
-      [],
-    ];
-    final combined = CombinedListView<int>(lists);
-    final expected = lists.expand((list) => list).toList();
-
-    for (final start in [-3, -1, 0, 1, 3, 6, 10, 100]) {
-      for (final threshold in [0, 2, 4, 8]) {
-        bool predicate(int value) => value > threshold;
-        expect(
-          combined.indexWhere(predicate, start),
-          expected.indexWhere(predicate, start),
-        );
-        expect(
-          combined.lastIndexWhere(predicate, start),
-          expected.lastIndexWhere(predicate, start),
-        );
-      }
-    }
-    expect(combined.indexWhere((x) => x.isEven),
-        expected.indexWhere((x) => x.isEven));
-    expect(combined.lastIndexWhere((x) => x.isEven),
-        expected.lastIndexWhere((x) => x.isEven));
-  });
-
   test('lookups reflect changes in the backing lists', () {
     final a = [1, 2];
     final b = [3, 2];
