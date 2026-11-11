@@ -15,7 +15,10 @@ void main() {
       }
     }
 
-    final iterator = IterableZip<int>([source(), [100]]).iterator;
+    final iterator = IterableZip<int>([
+      source(),
+      [100]
+    ]).iterator;
 
     expect(iterator.moveNext(), isTrue);
     expect(iterator.current, [0, 100]);
