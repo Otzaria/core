@@ -221,20 +221,22 @@ final class _GrowableBoolList extends BoolList {
   }
 
   void _shrink(int length) {
+    var usedWords = BoolList._lengthInWords(_length);
     if (length < _length ~/ _growthFactor) {
-      var newDataLength = BoolList._lengthInWords(length);
-      _data = Uint32List(newDataLength)..setRange(0, newDataLength, _data);
+      usedWords = BoolList._lengthInWords(length);
+      _data = Uint32List(usedWords)..setRange(0, usedWords, _data);
     }
 
-    // Clear the trailing bits in the partially used word, then clear entire
-    // words with a typed-data fill instead of visiting each bit individually.
+    // Unused storage is already clear. Reset only words that held values.
     var firstUnusedWord = length >> BoolList._entryShift;
     var usedBits = length & BoolList._entrySignBitIndex;
     if (usedBits != 0) {
       _data[firstUnusedWord] &= (1 << usedBits) - 1;
       firstUnusedWord++;
     }
-    _data.fillRange(firstUnusedWord, _data.length, 0);
+    if (firstUnusedWord < usedWords) {
+      _data.fillRange(firstUnusedWord, usedWords, 0);
+    }
 
     _length = length;
   }

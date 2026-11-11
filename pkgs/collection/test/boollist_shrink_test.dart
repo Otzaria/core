@@ -12,7 +12,7 @@ void main() {
     bits.fillRange(0, 2048, true);
 
     bits.length = 1500;
-    bits.length = 2048;
+    bits.length = 4096;
 
     expect(bits.take(1500), everyElement(isTrue));
     expect(bits.skip(1500), everyElement(isFalse));
