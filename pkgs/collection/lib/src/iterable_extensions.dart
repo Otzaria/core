@@ -1226,25 +1226,7 @@ class _SeparatedIterable<T> extends Iterable<T> {
   }
 
   @override
-  Iterable<T> take(int count) {
-    if (count == 0) return Iterable<T>.empty();
-    var beforeCount = _flags >> 1;
-    if (count == 1) {
-      if (beforeCount == 0) {
-        return _elements.take(1);
-      }
-      // return Iterable<T>.value(_separator); // Why you no exist?!
-      return DelegatingIterable<T>([_separator]);
-    }
-    var countWithoutBefore = count - beforeCount;
-    var elementCount = (countWithoutBefore + 1) >> 1;
-    return _SeparatedIterable<T>(
-      _elements.take(elementCount),
-      _separator,
-      beforeCount != 0,
-      countWithoutBefore.isEven,
-    );
-  }
+  Iterable<T> take(int count) => super.take(count);
 
   @override
   Iterable<T> skip(int count) {
