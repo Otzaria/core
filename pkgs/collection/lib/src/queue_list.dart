@@ -289,7 +289,7 @@ class _CastQueueList<S, T> extends QueueList<T> {
   List<T?> get _table => _delegate._table.cast<T?>();
 
   @override
-  set _table(List<T?> value) => _delegate._table = value.cast<S?>();
+  set _table(List<T?> value) => _delegate._table = List<S?>.of(value);
 
   @override
   int get _head => _delegate._head;
