@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Return immediately from `Iterable.sample(0)` without traversing the input.
 - Avoid repeated list-length lookups in list equality and hashing.
 - Apply key validation consistently in `CanonicalizedMap.addEntries`.
 - Fix `Iterable.separated().take()` to avoid yielding excess separators.
