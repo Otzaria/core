@@ -280,7 +280,16 @@ class _CastQueueList<S, T> extends QueueList<T> {
 
   // Assigns invalid values for head/tail because it uses the delegate to hold
   // the real values, but they are non-null fields.
-  _CastQueueList(this._delegate) : super._(-1, -1, _delegate._table.cast<T>());
+  _CastQueueList(this._delegate) : super._(-1, -1, <T?>[]);
+
+  // Keep the backing store in sync when either view grows the ring buffer.
+  // The superclass' field is not used: a cast view must not retain the
+  // original table after its delegate replaces it.
+  @override
+  List<T?> get _table => _delegate._table.cast<T?>();
+
+  @override
+  set _table(List<T?> value) => _delegate._table = value.cast<S?>();
 
   @override
   int get _head => _delegate._head;
