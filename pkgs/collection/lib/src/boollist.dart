@@ -106,14 +106,28 @@ abstract interface class BoolList with ListMixin<bool> {
   factory BoolList.of(Iterable<bool> elements, {bool growable = false}) {
     // A List has a cheap length and can be copied directly.
     if (elements is List<bool>) {
-      return BoolList._selectType(elements.length, growable)..setAll(0, elements);
+      return BoolList._selectType(elements.length, growable)
+        ..setAll(0, elements);
     }
     // For a lazy or single-use iterable, asking for length traverses the
     // source once before setAll traverses it again. Consume it only once.
-    var buffer = _GrowableBoolList(0);
+    _GrowableBoolList? buffer;
+    var word = 0;
+    var bits = 0;
     for (var value in elements) {
-      buffer.add(value);
+      if (value) word |= 1 << bits;
+      if (++bits == _bitsPerEntry) {
+        (buffer ??= _GrowableBoolList(0))._appendWord(word, bits);
+        word = 0;
+        bits = 0;
+      }
     }
+    if (buffer == null) {
+      var result = BoolList._selectType(bits, growable);
+      if (bits != 0) result._data[0] = word;
+      return result;
+    }
+    if (bits != 0) buffer._appendWord(word, bits);
     if (growable) return buffer;
     var result = _NonGrowableBoolList(buffer.length);
     result._data.setRange(0, result._data.length, buffer._data);
@@ -223,6 +237,12 @@ final class _GrowableBoolList extends BoolList {
     } else if (length < _length) {
       _shrink(length);
     }
+  }
+
+  void _appendWord(int word, int bits) {
+    var wordIndex = _length >> BoolList._entryShift;
+    _expand(_length + bits);
+    _data[wordIndex] = word;
   }
 
   void _expand(int length) {

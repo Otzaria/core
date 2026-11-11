@@ -10,7 +10,13 @@ import 'package:test/test.dart';
 void main() {
   test('BoolList.of consumes a lazy source once', () {
     final source = _SingleUseIterable([
-      true, false, true, true, false, false, true,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
     ]);
 
     final bits = BoolList.of(source);
@@ -28,6 +34,26 @@ void main() {
 
     expect(bits, [true, false, true, false]);
     expect(source.iteratorRequests, 1);
+  });
+
+  test('BoolList.of packs one-pass sources across word boundaries', () {
+    for (final count in [0, 31, 32, 33, 63, 64, 65, 97, 130]) {
+      final input = List<bool>.generate(
+        count,
+        (i) => i % 7 < 4 || i % 32 == 31,
+      );
+      for (final growable in [false, true]) {
+        final source = _SingleUseIterable(input);
+        final bits = BoolList.of(source, growable: growable);
+
+        expect(bits, input, reason: 'count=$count, growable=$growable');
+        expect(source.iteratorRequests, 1);
+        if (growable) {
+          bits.length += 4;
+          expect(bits, [...input, false, false, false, false]);
+        }
+      }
+    }
   });
 
   test('BoolList.of preserves a fixed-length list copy', () {
