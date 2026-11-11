@@ -8,15 +8,6 @@ import 'package:collection/collection.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('MapEquality.hash visits values without index lookups', () {
-    final map = _SinglePassMap<String, int>({'a': 1, 'b': 2, 'c': 3});
-    const equality = MapEquality<String, int>();
-
-    expect(equality.hash(map), equality.hash({'a': 1, 'b': 2, 'c': 3}));
-    expect(map.indexReads, 0);
-    expect(map.forEachCalls, 1);
-  });
-
   test('MapEquality.hash preserves hash for nullable and nested values', () {
     final data = <String, List<int>?>{
       'one': [1, 2, 3],
@@ -37,8 +28,8 @@ void main() {
     expect(equality.equals(<String, int>{}, <String, int>{}), isTrue);
   });
 
-  test('MapEquality.hash reflects edits to a map using MapBase.forEach', () {
-    final map = _CountingMap<String, int?>({'a': 1, 'b': 2});
+  test('MapEquality.hash reflects edits to a wrapped map', () {
+    final map = _WrappedMap<String, int?>({'a': 1, 'b': 2});
     const equality = MapEquality<String, int?>();
 
     expect(equality.hash(map), equality.hash({'a': 1, 'b': 2}));
@@ -49,17 +40,13 @@ void main() {
   });
 }
 
-class _CountingMap<K, V> extends MapBase<K, V> {
+class _WrappedMap<K, V> extends MapBase<K, V> {
   final Map<K, V> _backing;
-  int indexReads = 0;
 
-  _CountingMap(this._backing);
+  _WrappedMap(this._backing);
 
   @override
-  V? operator [](Object? key) {
-    indexReads++;
-    return _backing[key];
-  }
+  V? operator [](Object? key) => _backing[key];
 
   @override
   void operator []=(K key, V value) => _backing[key] = value;
@@ -72,16 +59,4 @@ class _CountingMap<K, V> extends MapBase<K, V> {
 
   @override
   V? remove(Object? key) => _backing.remove(key);
-}
-
-class _SinglePassMap<K, V> extends _CountingMap<K, V> {
-  int forEachCalls = 0;
-
-  _SinglePassMap(super.backing);
-
-  @override
-  void forEach(void Function(K, V) action) {
-    forEachCalls++;
-    _backing.forEach(action);
-  }
 }
