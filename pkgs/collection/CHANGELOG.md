@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Detect resized backing lists in `ListSlice.reverseRange`, consistent with other slice mutations.
 - Return immediately from `Iterable.sample(0)` without traversing the input.
 - Avoid repeated list-length lookups in list equality and hashing.
 - Apply key validation consistently in `CanonicalizedMap.addEntries`.
