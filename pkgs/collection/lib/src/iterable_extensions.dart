@@ -4,7 +4,6 @@
 
 import 'dart:math' show Random;
 
-import '../collection.dart' show DelegatingIterable;
 import 'algorithms.dart';
 import 'functions.dart' as functions;
 
