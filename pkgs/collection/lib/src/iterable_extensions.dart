@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:collection' show Queue;
 import 'dart:math' show Random;
 
 import '../collection.dart' show DelegatingIterable;
@@ -406,8 +407,23 @@ extension IterableExtension<T> on Iterable<T> {
 
   /// The last element, or `null` if the iterable is empty.
   T? get lastOrNull {
-    if (isEmpty) return null;
-    return last;
+    var iterable = this;
+    // These collections provide efficient isEmpty and last implementations.
+    if (iterable is List<T> ||
+        iterable is Set<T> ||
+        iterable is Queue<T> ||
+        iterable is _SeparatedIterable<T>) {
+      return iterable.isEmpty ? null : iterable.last;
+    }
+    // Generic lazy iterables otherwise get traversed twice: once by isEmpty
+    // and again by last. Use a single iterator instead.
+    var iterator = iterable.iterator;
+    if (!iterator.moveNext()) return null;
+    var result = iterator.current;
+    while (iterator.moveNext()) {
+      result = iterator.current;
+    }
+    return result;
   }
 
   /// The single element satisfying [test].
