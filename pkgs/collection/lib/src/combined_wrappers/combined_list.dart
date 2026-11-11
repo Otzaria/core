@@ -88,6 +88,38 @@ class CombinedListView<T> extends ListBase<T>
   }
 
   @override
+  int indexWhere(bool Function(T) test, [int start = 0]) {
+    if (start < 0) start = 0;
+    var offset = 0;
+    for (var list in _lists) {
+      var listLength = list.length;
+      for (var i = start > offset ? start - offset : 0; i < listLength; i++) {
+        if (test(list[i])) return offset + i;
+      }
+      offset += listLength;
+    }
+    return -1;
+  }
+
+  @override
+  int lastIndexWhere(bool Function(T) test, [int? start]) {
+    var offset = length;
+    var limit = start ?? offset - 1;
+    if (limit < 0) return -1;
+    for (var i = _lists.length - 1; i >= 0; i--) {
+      var list = _lists[i];
+      var listLength = list.length;
+      offset -= listLength;
+      var localStart = limit - offset;
+      if (localStart >= listLength) localStart = listLength - 1;
+      for (var j = localStart; j >= 0; j--) {
+        if (test(list[j])) return offset + j;
+      }
+    }
+    return -1;
+  }
+
+  @override
   set length(int length) {
     _throw();
   }
