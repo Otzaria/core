@@ -109,7 +109,7 @@ abstract interface class BoolList with ListMixin<bool> {
       return BoolList._selectType(elements.length, growable)
         ..setAll(0, elements);
     }
-    // For a lazy or single-use iterable, asking for length traverses the
+    // For a lazy iterable, asking for length can traverse the
     // source once before setAll traverses it again. Consume it only once.
     _GrowableBoolList? buffer;
     var word = 0;

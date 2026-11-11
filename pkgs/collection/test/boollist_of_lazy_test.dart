@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('BoolList.of consumes a lazy source once', () {
-    final source = _SingleUseIterable([
+    final source = _CountingIterable([
       true,
       false,
       true,
@@ -27,7 +27,7 @@ void main() {
   });
 
   test('BoolList.of growable consumes the lazy source once', () {
-    final source = _SingleUseIterable([true, false, true]);
+    final source = _CountingIterable([true, false, true]);
     final bits = BoolList.of(source, growable: true);
 
     bits.add(false);
@@ -43,7 +43,7 @@ void main() {
         (i) => i % 7 < 4 || i % 32 == 31,
       );
       for (final growable in [false, true]) {
-        final source = _SingleUseIterable(input);
+        final source = _CountingIterable(input);
         final bits = BoolList.of(source, growable: growable);
 
         expect(bits, input, reason: 'count=$count, growable=$growable');
@@ -67,18 +67,15 @@ void main() {
   });
 }
 
-class _SingleUseIterable extends IterableBase<bool> {
+class _CountingIterable extends IterableBase<bool> {
   final List<bool> _values;
   int iteratorRequests = 0;
 
-  _SingleUseIterable(this._values);
+  _CountingIterable(this._values);
 
   @override
   Iterator<bool> get iterator {
     iteratorRequests++;
-    if (iteratorRequests != 1) {
-      throw StateError('single-use source was iterated twice');
-    }
     return _values.iterator;
   }
 }
