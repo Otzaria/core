@@ -8,7 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('sample(0) does not iterate or allocate a random generator', () {
+  test('sample(0) does not iterate the input', () {
     final source = _ThrowingIterable<int>();
 
     expect(source.sample(0), isEmpty);
