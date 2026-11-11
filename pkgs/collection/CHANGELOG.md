@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Fix `Iterable.separated().take()` to avoid yielding excess separators.
 - Keep `QueueList.cast` views consistent when the backing queue grows.
 - Optimize `BoolList` shrinking by clearing previously used words in bulk.
 - Make empty `BoolList.fillRange` operations safe no-ops.
