@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Make empty `BoolList.fillRange` operations safe no-ops.
 - Fix `ListSlice.setRange` and `sortRange` to respect slice-relative offsets.
 - Fix `CanonicalizedMap.cast` to expose original keys and values.
 - Fix `UnionSet.lookup` for non-null keys after component sets containing `null`.
