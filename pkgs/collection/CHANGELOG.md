@@ -1,6 +1,22 @@
 ## 1.20.0-wip
 
 - Avoid a second traversal of lazy or single-use inputs in `BoolList.of`, while preserving compact fixed-length storage.
+- Hash maps with a single `forEach` pass, avoiding redundant key lookups; shortcut empty map comparisons.
+- Keep zipped iterators terminal after the shortest input ends, avoiding accidental extra reads.
+- Validate shuffle and insertion-sort bounds before touching elements; skip RNG initialization for trivial shuffle ranges.
+- Speed up `CombinedListView` lookups and boundary access by visiting child lists directly instead of rescanning their lengths.
+- Detect resized backing lists in `ListSlice.reverseRange`, consistent with other slice mutations.
+- Return immediately from `Iterable.sample(0)` without traversing the input.
+- Avoid repeated list-length lookups in list equality and hashing.
+- Apply key validation consistently in `CanonicalizedMap.addEntries`.
+- Fix `Iterable.separated().take()` to avoid yielding excess separators.
+- Keep `QueueList.cast` views consistent when the backing queue grows.
+- Optimize `BoolList` shrinking by clearing previously used words in bulk.
+- Make empty `BoolList.fillRange` operations safe no-ops.
+- Fix `ListSlice.setRange` and `sortRange` to respect slice-relative offsets.
+- Fix `CanonicalizedMap.cast` to expose original keys and values.
+- Fix `UnionSet.lookup` for non-null keys after component sets containing `null`.
+- Fix `CombinedMapView` lookup precedence when earlier maps contain `null` values.
 - Adds `separated` and `separatedList` extension methods to `Iterable`.
 - Adds `separate` extension method to `List`
 - Add `IterableMapEntryExtension` for working on `Map` as a list of pairs, using

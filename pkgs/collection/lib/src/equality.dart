@@ -187,7 +187,8 @@ class ListEquality<E> implements Equality<List<E>> {
     // This code is almost identical to the one in IterableEquality, except
     // that it uses indexing instead of iterating to get the elements.
     var hash = 0;
-    for (var i = 0; i < list.length; i++) {
+    var length = list.length;
+    for (var i = 0; i < length; i++) {
       var c = _elementEquality.hash(list[i]);
       hash = (hash + c) & _hashMask;
       hash = (hash + (hash << 10)) & _hashMask;
@@ -327,6 +328,7 @@ class MapEquality<K, V> implements Equality<Map<K, V>> {
     if (map1 == null || map2 == null) return false;
     var length = map1.length;
     if (length != map2.length) return false;
+    if (length == 0) return true;
     Map<_MapEntry, int> equalElementCounts = HashMap();
     for (var key in map1.keys) {
       var entry = _MapEntry(this, key, map1[key]);
@@ -346,11 +348,11 @@ class MapEquality<K, V> implements Equality<Map<K, V>> {
   int hash(Map<K, V>? map) {
     if (map == null) return null.hashCode;
     var hash = 0;
-    for (var key in map.keys) {
+    map.forEach((key, value) {
       var keyHash = _keyEquality.hash(key);
-      var valueHash = _valueEquality.hash(map[key] as V);
+      var valueHash = _valueEquality.hash(value);
       hash = (hash + 3 * keyHash + 7 * valueHash) & _hashMask;
-    }
+    });
     hash = (hash + (hash << 3)) & _hashMask;
     hash ^= hash >> 11;
     hash = (hash + (hash << 15)) & _hashMask;
