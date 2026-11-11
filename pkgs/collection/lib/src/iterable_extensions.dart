@@ -1225,9 +1225,6 @@ class _SeparatedIterable<T> extends Iterable<T> {
   }
 
   @override
-  Iterable<T> take(int count) => super.take(count);
-
-  @override
   Iterable<T> skip(int count) {
     if (count == 0) return this;
     var beforeCount = _flags >> 1;
