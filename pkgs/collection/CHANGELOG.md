@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Fix `CanonicalizedMap.cast` to expose original keys and values.
 - Fix `UnionSet.lookup` for non-null keys after component sets containing `null`.
 - Fix `CombinedMapView` lookup precedence when earlier maps contain `null` values.
 - Adds `separated` and `separatedList` extension methods to `Iterable`.
