@@ -282,14 +282,29 @@ class _CastQueueList<S, T> extends QueueList<T> {
   // the real values, but they are non-null fields.
   _CastQueueList(this._delegate) : super._(-1, -1, <T?>[]);
 
-  // Keep the backing store in sync when either view grows the ring buffer.
-  // The superclass' field is not used: a cast view must not retain the
-  // original table after its delegate replaces it.
-  @override
-  List<T?> get _table => _delegate._table.cast<T?>();
+  // Cache the cast view while the delegate uses the same backing buffer.
+  // A growth operation replaces that buffer and must invalidate the view.
+  List<S?>? _cachedDelegateTable;
+  List<T?>? _cachedCastTable;
 
   @override
-  set _table(List<T?> value) => _delegate._table = List<S?>.of(value);
+  List<T?> get _table {
+    var table = _delegate._table;
+    if (!identical(table, _cachedDelegateTable)) {
+      _cachedDelegateTable = table;
+      _cachedCastTable = table.cast<T?>();
+    }
+    return _cachedCastTable!;
+  }
+
+  @override
+  set _table(List<T?> value) {
+    // Preserve the delegate's element type even if the narrower cast view
+    // triggers a resize. Otherwise the delegate could reject valid S values.
+    _delegate._table = List<S?>.of(value);
+    _cachedDelegateTable = null;
+    _cachedCastTable = null;
+  }
 
   @override
   int get _head => _delegate._head;
