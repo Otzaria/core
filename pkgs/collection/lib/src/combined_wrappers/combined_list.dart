@@ -61,9 +61,7 @@ class CombinedListView<T> extends ListBase<T>
     var offset = 0;
     for (var list in _lists) {
       var listLength = list.length;
-      for (var i = start > offset ? start - offset : 0;
-          i < listLength;
-          i++) {
+      for (var i = start > offset ? start - offset : 0; i < listLength; i++) {
         if (list[i] == element) return offset + i;
       }
       offset += listLength;
