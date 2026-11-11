@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Optimize `BoolList` shrinking by clearing previously used words in bulk.
 - Make empty `BoolList.fillRange` operations safe no-ops.
 - Fix `ListSlice.setRange` and `sortRange` to respect slice-relative offsets.
 - Fix `CanonicalizedMap.cast` to expose original keys and values.
