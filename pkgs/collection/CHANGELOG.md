@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Keep zipped iterators terminal after the shortest input ends, avoiding accidental extra reads.
 - Validate shuffle and insertion-sort bounds before touching elements; skip RNG initialization for trivial shuffle ranges.
 - Speed up `CombinedListView` lookups and boundary access by visiting child lists directly instead of rescanning their lengths.
 - Detect resized backing lists in `ListSlice.reverseRange`, consistent with other slice mutations.
