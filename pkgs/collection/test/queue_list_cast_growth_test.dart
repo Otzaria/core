@@ -29,6 +29,17 @@ void main() {
     expect(cast, [...elements, 40]);
   });
 
+  test('growing through a cast does not narrow the original storage', () {
+    final original = QueueList<num>();
+    final cast = original.cast<int>();
+
+    cast.addAll(List<int>.generate(40, (i) => i));
+    original.add(2.5);
+
+    expect(original.last, 2.5);
+    expect(() => cast.last, throwsA(isA<TypeError>()));
+  });
+
   test('both views work after wraparound and growth', () {
     final original = QueueList<num>()..addAll([1, 2, 3, 4, 5, 6]);
     final cast = original.cast<int>();
