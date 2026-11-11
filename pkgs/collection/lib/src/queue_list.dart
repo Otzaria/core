@@ -52,7 +52,8 @@ class QueueList<E> extends Object with ListMixin<E> implements Queue<E> {
   factory QueueList.from(Iterable<E> source) {
     if (source is List) {
       var length = source.length;
-      var queue = QueueList<E>(length + 1);
+      // The constructor already reserves one unused ring-buffer slot.
+      var queue = QueueList<E>(length);
       assert(queue._table.length > length);
       var sourceList = source;
       queue._table.setRange(0, length, sourceList, 0);
