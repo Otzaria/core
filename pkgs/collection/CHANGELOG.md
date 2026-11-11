@@ -1,5 +1,6 @@
 ## 1.20.0-wip
 
+- Avoid repeated list-length lookups in list equality and hashing.
 - Apply key validation consistently in `CanonicalizedMap.addEntries`.
 - Fix `Iterable.separated().take()` to avoid yielding excess separators.
 - Keep `QueueList.cast` views consistent when the backing queue grows.
