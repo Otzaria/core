@@ -296,8 +296,9 @@ extension ListExtensions<E> on List<E> {
   /// at the same indices are equal according to [equality],
   /// which defaults to using `==`.
   bool equals(List<E> other, [Equality<E> equality = const DefaultEquality()]) {
-    if (length != other.length) return false;
-    for (var i = 0; i < length; i++) {
+    var listLength = length;
+    if (listLength != other.length) return false;
+    for (var i = 0; i < listLength; i++) {
       if (!equality.equals(this[i], other[i])) return false;
     }
     return true;
@@ -607,7 +608,7 @@ class ListSlice<E> extends ListBase<E> {
       throw ConcurrentModificationError(source);
     }
     RangeError.checkValidRange(start, end, length);
-    source.setRange(start + start, start + end, iterable, skipCount);
+    source.setRange(this.start + start, this.start + end, iterable, skipCount);
   }
 
   /// A fixed length view of a range of this list.
@@ -649,7 +650,8 @@ class ListSlice<E> extends ListBase<E> {
     if (source.length != _initialSize) {
       throw ConcurrentModificationError(source);
     }
-    source.sortRange(start, end, compare);
+    RangeError.checkValidRange(start, end, length);
+    source.sortRange(this.start + start, this.start + end, compare);
   }
 
   /// Shuffles a range of elements.
